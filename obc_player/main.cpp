@@ -17,7 +17,7 @@ SpriteManager* manager;
 void renderScene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 1.0, 1.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	manager->draw_sprites();
 
@@ -50,9 +50,9 @@ int main(int argc, char** argv)
 	//cv::Mat tex;
 	int w = 660;
 	int h = 373;
-	unsigned char* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
+	//unsigned char* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
 	manager = SpriteManager::get_instnce();
-	manager->create_sprite(0, -1.0, -1.0, 2.0, 2.0, tex, w, h);
+	manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5/*, tex, w, h*/);
 
 	// register callbacks
 	glutDisplayFunc(renderScene);

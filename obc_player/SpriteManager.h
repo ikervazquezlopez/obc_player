@@ -10,9 +10,9 @@ class SpriteManager
 {
 public:
 	static SpriteManager* get_instnce();
-	int create_sprite(int id, float x, float y, float w, float h, unsigned char* tex, int tw, int th);
+	int create_sprite(int id, float x, float y, float w, float h/*, unsigned char* tex, int tw, int th*/);
 	Sprite get_sprite(int id);
-	void update_sprite(int id, float x, float y, float w, float h, unsigned char* tex);
+	void update_sprite(int id, float x, float y, float w, float h/*, unsigned char* tex*/);
 	void draw_sprites();
 
 private:

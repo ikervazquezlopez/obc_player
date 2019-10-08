@@ -15,9 +15,9 @@ SpriteManager *SpriteManager::get_instnce()
 	return s_instance;;
 }
 
-int SpriteManager::create_sprite(int id, float x, float y, float w, float h, unsigned char* tex, int tw, int th)
+int SpriteManager::create_sprite(int id, float x, float y, float w, float h/*, unsigned char* tex, int tw, int th*/)
 {
-	Sprite sprite = Sprite(id, x, y, w, h, tex, tw, th);
+	Sprite sprite = Sprite(id, x, y, w, h/*, tex, tw, th*/);
 	std::pair<int, Sprite> el(id, sprite);
 	sprites.insert(el);
 
@@ -29,7 +29,7 @@ Sprite SpriteManager::get_sprite(int id)
 	return sprites.at(id);
 }
 
-void SpriteManager::update_sprite(int id, float x, float y, float w, float h, unsigned char* tex)
+void SpriteManager::update_sprite(int id, float x, float y, float w, float h/*, unsigned char* tex*/)
 {
 	Sprite sprite = get_sprite(id);
 	sprite.set_position(x, y);
@@ -39,10 +39,11 @@ void SpriteManager::update_sprite(int id, float x, float y, float w, float h, un
 
 void SpriteManager::draw_sprites()
 {
+	glUseProgram(sprite_display_program);
 	for (std::pair<int, Sprite> p : this->sprites) {
 		glBindVertexArray(p.second.get_vao());
-		glUseProgram(sprite_display_program);
-		glBindTexture(GL_TEXTURE_2D, p.second.get_texture());
+		
+		//glBindTexture(GL_TEXTURE_2D, p.second.get_texture());
 		glDrawArrays(GL_QUADS, 0, 4);
 	}
 }
