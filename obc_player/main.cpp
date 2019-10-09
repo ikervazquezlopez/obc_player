@@ -24,6 +24,11 @@ void renderScene(void)
 	glutSwapBuffers();
 }
 
+void idle(void)
+{
+	glutPostRedisplay();
+}
+
 
 
 void Init()
@@ -48,14 +53,20 @@ int main(int argc, char** argv)
 	Init();
 
 	//cv::Mat tex;
-	int w = 660;
-	int h = 373;
-	//unsigned char* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
+	int w = 256;
+	int h = 256;
+	//unsigned char* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic_1.jpg", &w, &h, 0, SOIL_LOAD_RGB);
+	GLubyte tex[] = { 255, 0, 0,
+						0, 255, 0,
+						0, 0, 255,
+						255, 255, 255
+							};
 	manager = SpriteManager::get_instnce();
-	manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5/*, tex, w, h*/);
+	manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, 2, 2);
 
 	// register callbacks
 	glutDisplayFunc(renderScene);
+	glutIdleFunc(idle);
 	glutMainLoop();
 
 	return 0;
