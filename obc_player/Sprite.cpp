@@ -18,10 +18,10 @@ Sprite::Sprite(int id, float x, float y, float w, float h, unsigned char* tex, i
 	this->h = h;
 	
 	float vertices[] = {
-		x,	y + h,		0,		0, 1, // top left
-		x,	y,			0,		0, 0, // bottom left
-		x + w,	y,		0,		1, 0, // bottom right
-		x + w, y + h,	0,		1, 1  // top right
+		x,	y,		0,			0, 1, // bottom left
+		x + w,	y,	0,			1, 1, // bottom right
+		x + w,	y + h,	0,		1, 0, // top right
+		x, y + h,	0,			0, 0  // top left
 	};
 	
 	int vertex_size = 5;
