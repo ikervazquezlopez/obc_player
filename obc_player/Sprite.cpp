@@ -26,15 +26,6 @@ Sprite::Sprite(int id, float x, float y, float w, float h, unsigned char* tex, i
 	
 	int vertex_size = 5;
 
-	/*
-	// Create the quad vertices
-	std::vector<glm::vec3> vertices;
-	vertices.push_back(glm::vec3( x, y + h, 0 ));
-	vertices.push_back(glm::vec3(x, y, 0 ));
-	vertices.push_back(glm::vec3(x + w, y, 0 ));
-	vertices.push_back(glm::vec3(x + w, y + h, 0 ));
-	*/
-
 	glGenVertexArrays(1, &this->vao);
 	glBindVertexArray(this->vao);
 

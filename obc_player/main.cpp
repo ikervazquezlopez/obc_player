@@ -44,25 +44,18 @@ int main(int argc, char** argv)
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(500, 500);//optional
-	glutInitWindowSize(800, 600); //optional
+	glutInitWindowPosition(500, 500);
+	glutInitWindowSize(800, 600); 
 	glutCreateWindow("OBC player");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glewInit();
 
 	Init();
 
-	//cv::Mat tex;
 	int w = 660;
 	int h = 373;
 	GLubyte * tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
-	/*
-	GLubyte tex[] = { 255, 0, 0,
-						0, 255, 0,
-						0, 0, 255,
-						255, 255, 255
-							};
-	*/
+	
 	manager = SpriteManager::get_instnce();
 	manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, w, h);
 
