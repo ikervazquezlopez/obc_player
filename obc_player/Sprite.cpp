@@ -9,19 +9,23 @@ Sprite::Sprite()
 {
 }
 
-Sprite::Sprite(int id, float x, float y, float w, float h, unsigned char* tex, int tw, int th)
+Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th)
 {
 	this->id = id;
 	this->x = x;
 	this->y = y;
 	this->w = w;
 	this->h = h;
+
+	float z = 0;
+	if (id == -1)
+		z = 0.1;
 	
 	float vertices[] = {
-		x,	y,		0,			0, 1, // bottom left
-		x + w,	y,	0,			1, 1, // bottom right
-		x + w,	y + h,	0,		1, 0, // top right
-		x, y + h,	0,			0, 0  // top left
+		x,	y,		0+z,			0, 1, // bottom left
+		x + w,	y,	0+z,			1, 1, // bottom right
+		x + w,	y + h,	0+z,		1, 0, // top right
+		x, y + h,	0+z,			0, 0  // top left
 	};
 	
 	int vertex_size = 5;
@@ -44,8 +48,8 @@ Sprite::Sprite(int id, float x, float y, float w, float h, unsigned char* tex, i
 	// Create texture
 	glGenTextures(1, &this->texture);
 	glBindTexture(GL_TEXTURE_2D, this->texture);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_WRAP_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_WRAP_BORDER);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -62,12 +66,54 @@ void Sprite::set_position(float x, float y)
 {
 	this->x = x;
 	this->y = y;
+	update_buffer();
 }
 
 void Sprite::set_dimensions(float w, float h)
 {
 	this->w = w;
 	this->h = h;
+	update_buffer();
+}
+
+void Sprite::update_buffer() {
+	float p0[] = { this->x, this->y };
+	float p1[] = { this->x+this->w, this->y };
+	float p2[] = { this->x+this->w, this->y+this->h };
+	float p3[] = { this->x, this->y + this->h };
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(float), p0);
+	glBufferSubData(GL_ARRAY_BUFFER, 1 * 5 * sizeof(float), 2 * sizeof(float), p1);
+	glBufferSubData(GL_ARRAY_BUFFER, 2 * 5 * sizeof(float), 2 * sizeof(float), p2);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * 5 * sizeof(float), 2 * sizeof(float), p3);
+
+}
+
+int Sprite::get_id()
+{
+	return this->id;
+}
+
+float Sprite::get_x()
+{
+	return this->x;
+}
+
+float Sprite::get_y()
+{
+	return this->y;
+}
+
+float Sprite::get_w()
+{
+	return this->w;
+}
+
+float Sprite::get_h()
+{
+	return this->h;
 }
 
 GLuint Sprite::get_texture()

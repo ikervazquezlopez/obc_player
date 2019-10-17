@@ -11,13 +11,18 @@ class Sprite
 
 public:
 	Sprite();
-	Sprite(int id, float x, float y, float w, float h, unsigned char* tex, int tw, int th);
+	Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th);
 	~Sprite();
 
 	void set_position(float x, float y);
 	void set_dimensions(float w, float h);
 	void set_id(int i);
-	void set_texture(unsigned char* tex);
+	void set_texture(GLubyte* tex);
+	int get_id();
+	float get_x();
+	float get_y();
+	float get_w();
+	float get_h();
 	GLuint get_texture();
 	GLuint get_vao();
 
@@ -30,5 +35,7 @@ private:
 	int id;
 	GLuint vbo;
 	GLuint vao;
+
+	void update_buffer();
 };
 
