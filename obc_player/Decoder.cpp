@@ -29,9 +29,9 @@ Decoder::~Decoder()
 
 void Decoder::open_file(const char* filename)
 {
-	file.open(filename, std::ios_base::in | std::ios_base::binary);
+	file.open(filename, std::ios_base::out | std::ios_base::binary);
 	if (!this->file.is_open()) {
-		std::cerr << "The file could not be open!" << std::endl;
+		std::cerr << "(Decoder) The file could not be open!" << std::endl;
 		exit(-1);
 	}
 }
