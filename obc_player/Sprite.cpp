@@ -3,6 +3,8 @@
 
 #include <opencv2/core.hpp>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
 
 Sprite::Sprite()
@@ -16,6 +18,9 @@ Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw,
 	this->y = y;
 	this->w = w;
 	this->h = h;
+	this->M_t = glm::mat4(1.0f);
+	this->M_s = glm::mat4(1.0f);
+	this->current_matrix = glm::mat4(1.0f);
 
 	float z = 0;
 	if (id == -1)
@@ -36,7 +41,7 @@ Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw,
 	// Create Vertex buffer object in GPU
 	glGenBuffers(1, &this->vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size * 4, vertices, GL_STATIC_DRAW); //  4 == number of vertices
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_size * 4, vertices, GL_DYNAMIC_DRAW); //  4 == number of vertices
 
 
 	glEnableVertexAttribArray(0);
@@ -66,14 +71,29 @@ void Sprite::set_position(float x, float y)
 {
 	this->x = x;
 	this->y = y;
-	update_buffer();
+	//update_buffer();
 }
 
 void Sprite::set_dimensions(float w, float h)
 {
 	this->w = w;
 	this->h = h;
-	update_buffer();
+	//update_buffer();
+}
+
+void Sprite::set_current_matrix(glm::mat4 m)
+{
+	this->current_matrix = m;
+}
+
+void Sprite::set_M_t(glm::mat4 m)
+{
+	this->M_t = m;
+}
+
+void Sprite::set_M_s(glm::mat4 m)
+{
+	this->M_s = m;
 }
 
 void Sprite::update_buffer() {
@@ -124,5 +144,20 @@ GLuint Sprite::get_texture()
 GLuint Sprite::get_vao()
 {
 	return this->vao;
+}
+
+glm::mat4 Sprite::get_current_matrix()
+{
+	return this->current_matrix;
+}
+
+glm::mat4 Sprite::get_M_t()
+{
+	return this->M_t;
+}
+
+glm::mat4 Sprite::get_M_s()
+{
+	return this->M_s;
 }
 

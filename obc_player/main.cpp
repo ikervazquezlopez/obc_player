@@ -7,6 +7,7 @@
 #include <stdio.h> 
 #include <opencv2/core.hpp>
 #include <SOIL.h>
+#include <glm/glm.hpp>
 
 #include "SpriteManager.h"
 #include "Sprite.h"
@@ -27,13 +28,15 @@ void renderScene(void)
 
 void idle(void)
 {
+	Sprite* s = manager->get_sprite(0);
+	manager->update_sprite(s->get_id(), s->get_x(), s->get_y(), s->get_w()+ 0.01, s->get_h(), nullptr);
 	glutPostRedisplay();
 }
 
 void keyboard(unsigned char c, int x, int y)
 {
 	Sprite* s = manager->get_sprite(1);
-	manager->update_sprite((*s).get_id(), (*s).get_x() + 0.1, (*s).get_y(), (*s).get_w(), (*s).get_h(), nullptr);
+	manager->update_sprite((*s).get_id(), (*s).get_x() + 1.1, (*s).get_y(), (*s).get_w(), (*s).get_h(), nullptr);
 }
 
 
@@ -64,9 +67,10 @@ int main(int argc, char** argv)
 	GLubyte * tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
 	
 	manager = SpriteManager::get_instnce();
-	manager->create_sprite_background(w, h, tex);
-	manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, w, h);
-	manager->create_sprite(1, -1, -1, 0.5, 0.5, tex, w, h);
+	Sprite s;
+	Sprite background = manager->create_sprite_background(w, h, tex);
+	s = manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, w, h);
+	s = manager->create_sprite(1, -1, -1, 0.5, 0.5, tex, w, h);
 
 	// register callbacks
 	glutDisplayFunc(renderScene);
