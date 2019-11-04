@@ -8,12 +8,21 @@
 #include <opencv2/core.hpp>
 #include <SOIL.h>
 #include <glm/glm.hpp>
+#include <math.h>
 
 #include "SpriteManager.h"
 #include "Sprite.h"
 
+#define PI 3.1415
 
 SpriteManager* manager;
+
+float m = 0.0f;
+float delta = 0.01;
+
+int tw = 660;
+int th = 373;
+GLubyte* n_tex;
 
 
 void renderScene(void)
@@ -28,15 +37,26 @@ void renderScene(void)
 
 void idle(void)
 {
+
 	Sprite* s = manager->get_sprite(0);
-	manager->update_sprite(s->get_id(), s->get_x(), s->get_y(), s->get_w()+ 0.01, s->get_h(), nullptr);
+	float r = 0.5;
+	float ny = std::sin(m)/2;
+	float nx = std::cos(m)/2;
+	float x = std::sqrtf(r * r - ny * ny);
+	float y = std::sqrtf(r * r - nx * nx);
+	float dx = x - s->get_x();
+	float dy = y - s->get_y();
+	manager->update_sprite(s->get_id(), s->get_x()+dx, s->get_y()+dy, s->get_w(), s->get_h(), tw, th, nullptr);
+	m += delta;
+	if (m > 1.0) {
+		manager->update_sprite(s->get_id(), s->get_x(), s->get_y(), s->get_w(), s->get_h(), tw, th, n_tex);
+	}
 	glutPostRedisplay();
 }
 
 void keyboard(unsigned char c, int x, int y)
 {
-	Sprite* s = manager->get_sprite(1);
-	manager->update_sprite((*s).get_id(), (*s).get_x() + 1.1, (*s).get_y(), (*s).get_w(), (*s).get_h(), nullptr);
+
 }
 
 
@@ -62,15 +82,15 @@ int main(int argc, char** argv)
 
 	Init();
 
-	int w = 660;
-	int h = 373;
-	GLubyte * tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &w, &h, 0, SOIL_LOAD_RGB);
+	
+	GLubyte * tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
+	n_tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\Jump.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
 	
 	manager = SpriteManager::get_instnce();
 	Sprite s;
-	Sprite background = manager->create_sprite_background(w, h, tex);
-	s = manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, w, h);
-	s = manager->create_sprite(1, -1, -1, 0.5, 0.5, tex, w, h);
+	Sprite background = manager->create_sprite_background(tw, th, tex);
+	s = manager->create_sprite(0, 0.0, 0.0, 0.5, 0.5, tex, tw, th);
+	s = manager->create_sprite(1, -1, -1, 0.5, 0.5, tex, tw, th);
 
 	// register callbacks
 	glutDisplayFunc(renderScene);

@@ -18,7 +18,7 @@ public:
 	void set_position(float x, float y);
 	void set_dimensions(float w, float h);
 	void set_id(int i);
-	void set_texture(GLubyte* tex);
+	void set_texture(float tw, float th, GLubyte* tex);
 	void set_current_matrix(glm::mat4 m);
 	void set_M_t(glm::mat4 m);
 	void set_M_s(glm::mat4 m);

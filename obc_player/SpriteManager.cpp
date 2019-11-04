@@ -35,7 +35,7 @@ Sprite* SpriteManager::get_sprite(int id)
 	return &sprites.at(id);
 }
 
-void SpriteManager::update_sprite(int id, float x, float y, float w, float h, GLubyte* tex)
+void SpriteManager::update_sprite(int id, float x, float y, float w, float h, float tw, float th, GLubyte* tex)
 {
 	Sprite* sprite = get_sprite(id);
 
@@ -46,7 +46,9 @@ void SpriteManager::update_sprite(int id, float x, float y, float w, float h, GL
 	sprite->set_position(x, y);
 	sprite->set_dimensions(w, h);
 	sprite->set_current_matrix(t * s * sprite->get_current_matrix());
-	//sprite.set_texture(tex);
+	if (tex != nullptr) {
+		sprite->set_texture(tw, th, tex);
+	}
 }
 
 void SpriteManager::draw_sprites()

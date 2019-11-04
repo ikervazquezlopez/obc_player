@@ -81,6 +81,12 @@ void Sprite::set_dimensions(float w, float h)
 	//update_buffer();
 }
 
+void Sprite::set_texture(float tw, float th, GLubyte* tex)
+{
+	glBindTexture(GL_TEXTURE0, this->get_texture());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+}
+
 void Sprite::set_current_matrix(glm::mat4 m)
 {
 	this->current_matrix = m;
