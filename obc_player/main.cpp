@@ -46,10 +46,13 @@ void idle(void)
 	float y = std::sqrtf(r * r - nx * nx);
 	float dx = x - s->get_x();
 	float dy = y - s->get_y();
-	manager->update_sprite(s->get_id(), s->get_x()+dx, s->get_y()+dy, s->get_w(), s->get_h(), tw, th, nullptr);
-	m += delta;
+	
 	if (m > 1.0) {
-		manager->update_sprite(s->get_id(), s->get_x(), s->get_y(), s->get_w(), s->get_h(), tw, th, n_tex);
+		manager->update_sprite(s->get_id(), s->get_x() + dx, s->get_y() + dy, s->get_w(), s->get_h(), tw, th, n_tex);
+	}
+	else {
+		manager->update_sprite(s->get_id(), s->get_x() + dx, s->get_y() + dy, s->get_w(), s->get_h(), tw, th, nullptr);
+		m += delta;
 	}
 	glutPostRedisplay();
 }

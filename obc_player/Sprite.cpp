@@ -83,7 +83,7 @@ void Sprite::set_dimensions(float w, float h)
 
 void Sprite::set_texture(float tw, float th, GLubyte* tex)
 {
-	glBindTexture(GL_TEXTURE0, this->get_texture());
+	glBindTexture(GL_TEXTURE_2D, this->get_texture());
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
 }
 
