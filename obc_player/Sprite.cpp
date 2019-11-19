@@ -11,13 +11,13 @@ Sprite::Sprite()
 {
 }
 
-Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th)
+Sprite::Sprite(Sprite::Sprite_Data data)
 {
-	this->id = id;
-	this->x = x;
-	this->y = y;
-	this->w = w;
-	this->h = h;
+	this->id = data.id;
+	this->x = data.x;
+	this->y = data.y;
+	this->w = data.w;
+	this->h = data.h;
 	this->M_t = glm::mat4(1.0f);
 	this->M_s = glm::mat4(1.0f);
 	this->current_matrix = glm::mat4(1.0f);
@@ -26,11 +26,12 @@ Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw,
 	if (id == -1)
 		z = 0.1;
 	
+	// Vertex data => (x, y, z, tx, ty)
 	float vertices[] = {
-		x,	y,		0+z,			0, 1, // bottom left
-		x + w,	y,	0+z,			1, 1, // bottom right
-		x + w,	y + h,	0+z,		1, 0, // top right
-		x, y + h,	0+z,			0, 0  // top left
+		data.x,	data.y,	0+z,					data.tx, data.ty+data.th,		//0, 1, // bottom left
+		data.x + data.w,data.y,	0+z,			data.tx+data.tw, data.ty+data.th,	//1, 1, // bottom right
+		data.x + data.w,data.y + data.h,0+z,	data.tx+data.tw, data.ty,		//1, 0, // top right
+		data.x, data.y + data.h,0+z,			data.tx, data.ty			//0, 0  // top left
 	};
 	
 	int vertex_size = 5;
@@ -50,6 +51,7 @@ Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw,
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, vertex_size*sizeof(float), (void*)(3 * sizeof(float)));
 
+	/*
 	// Create texture
 	glGenTextures(1, &this->texture);
 	glBindTexture(GL_TEXTURE_2D, this->texture);
@@ -59,6 +61,7 @@ Sprite::Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_WRAP_BORDER);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+	*/
 	
 }
 
@@ -81,10 +84,24 @@ void Sprite::set_dimensions(float w, float h)
 	//update_buffer();
 }
 
-void Sprite::set_texture(float tw, float th, GLubyte* tex)
+void Sprite::set_texture(float tx, float ty, float tw, float th)
 {
+	float tl[2] = { tx, ty };
+	float tr[2] = { tx + tw, ty };
+	float bl[2] = { tx + tw, ty + th };
+	float br[2] = { tx, ty + th };
+
+	// Update texture coordinates.
+	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float), 2 * sizeof(float), bl);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float), 2 * sizeof(float), br);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float), 2 * sizeof(float), tr);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float), 2 * sizeof(float), tl);
+
+	/*
 	glBindTexture(GL_TEXTURE_2D, this->get_texture());
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+	*/
 }
 
 void Sprite::set_current_matrix(glm::mat4 m)
@@ -142,9 +159,39 @@ float Sprite::get_h()
 	return this->h;
 }
 
-GLuint Sprite::get_texture()
+float Sprite::get_tx()
 {
-	return this->texture;
+	return this->tx;
+}
+
+float Sprite::get_ty()
+{
+	return this->ty;
+}
+
+float Sprite::get_tw()
+{
+	return this->tw;
+}
+
+float Sprite::get_th()
+{
+	return this->th;
+}
+
+Sprite::Sprite_Data Sprite::get_data()
+{
+	Sprite_Data data;
+	data.id = this->id;
+	data.x = this->x;
+	data.y = this->y;
+	data.w = this->w;
+	data.h = this->h;
+	data.tx = this->tx;
+	data.ty = this->ty;
+	data.tw = this->tw;
+	data.th = this->th;
+	return data;
 }
 
 GLuint Sprite::get_vao()

@@ -9,16 +9,33 @@
 class Sprite
 {
 
+	
 
 public:
+	struct Sprite_Data {
+		int id;
+
+		// Quad data
+		float x;
+		float y;
+		float w;
+		float h;
+
+		// Texture data
+		float tx;
+		float ty;
+		float tw;
+		float th;
+	};
+
 	Sprite();
-	Sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th);
+	Sprite(Sprite::Sprite_Data data);
 	~Sprite();
 
 	void set_position(float x, float y);
 	void set_dimensions(float w, float h);
 	void set_id(int i);
-	void set_texture(float tw, float th, GLubyte* tex);
+	void set_texture(float tx, float ty, float tw, float th);
 	void set_current_matrix(glm::mat4 m);
 	void set_M_t(glm::mat4 m);
 	void set_M_s(glm::mat4 m);
@@ -28,18 +45,26 @@ public:
 	float get_y();
 	float get_w();
 	float get_h();
-	GLuint get_texture();
+	float get_tx();
+	float get_ty();
+	float get_tw();
+	float get_th();
+	Sprite_Data get_data();
+
 	GLuint get_vao();
 	glm::mat4 get_current_matrix();
 	glm::mat4 get_M_t();
 	glm::mat4 get_M_s();
 
 private:
-	GLuint texture;
 	float x;
 	float y;
 	float w;
 	float h;
+	float tx;	// Texture x coordinate [0,1]
+	float ty;	// Texture y coordinate [0,1]
+	float tw;	// Texture width [0,1]
+	float th;	// Texture heigth [0,1]
 	int id;
 	GLuint vbo;
 	GLuint vao;

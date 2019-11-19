@@ -9,19 +9,18 @@
 class SpriteManager
 {
 public:
-	static SpriteManager* get_instnce();
-	Sprite create_sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th);
+	static SpriteManager* get_instance();
+	Sprite create_sprite(Sprite::Sprite_Data data);
 	Sprite* get_sprite(int id);
-	void update_sprite(int id, float x, float y, float w, float h, float tw, float th, GLubyte* tex);
-	void draw_sprites();
-	Sprite create_sprite_background(float w, float h, GLubyte* tex);
+	std::unordered_map<int, Sprite> get_sprites();
+	void update_sprite(Sprite::Sprite_Data data);
+	void draw_sprites(GLuint program);
 
 private:
 	SpriteManager();
 	~SpriteManager();
 	std::unordered_map<int, Sprite> sprites;
 	static SpriteManager* s_instance;
-	GLuint sprite_display_program;
 	Sprite background;
 };
 

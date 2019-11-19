@@ -22,19 +22,23 @@ Object_data Coder::fill_object_data(uint32_t id, uint32_t x, uint32_t y, uint32_
 	return obj;
 }
 
-void Coder::write_4_bytes(char data[5])
+void Coder::write_4_bytes(char* data)
 {
 	this->file.write(data, 4*sizeof(char));
 }
 
 void Coder::write_4_bytes(uint32_t data)
 {
-	this->file.write((char*)&data, sizeof(data));
+	this->file.write(reinterpret_cast<char*>(&data), sizeof(data));
+}
+
+Coder::Coder()
+{
 }
 
 void Coder::open_file(const char* filename)
 {
-	file.open(filename, std::ios_base::in | std::ios_base::binary);
+	this->file.open(filename, std::ios_base::out | std::ios_base::binary);
 	if (!this->file.is_open()) {
 		std::cerr << "(Coder) The file could not be open!" << std::endl;
 		exit(-1);
@@ -48,7 +52,7 @@ void Coder::close_file()
 
 void Coder::write_header(uint32_t frame_count, uint32_t frame_rate, uint32_t video_width, uint32_t video_height)
 {
-	char tag[5] = "16KC"; tag[5] = '\0';
+	char tag[5] = "16KC"; tag[4] = '\0';
 	write_4_bytes(tag);
 	write_4_bytes(frame_count);
 	write_4_bytes(frame_rate);
@@ -56,8 +60,9 @@ void Coder::write_header(uint32_t frame_count, uint32_t frame_rate, uint32_t vid
 	write_4_bytes(video_height);
 }
 
-void Coder::write_background(unsigned char* data, unsigned int size)
+void Coder::write_background(unsigned char* data, uint32_t size)
 {
+	write_4_bytes(size);
 	this->file.write((char*) data, size);
 }
 

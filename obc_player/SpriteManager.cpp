@@ -10,7 +10,7 @@
 
 SpriteManager* SpriteManager::s_instance = NULL;
 
-SpriteManager *SpriteManager::get_instnce()
+SpriteManager *SpriteManager::get_instance()
 {
 	if (!s_instance) {
 		s_instance = new SpriteManager;	
@@ -18,12 +18,12 @@ SpriteManager *SpriteManager::get_instnce()
 	return s_instance;;
 }
 
-Sprite SpriteManager::create_sprite(int id, float x, float y, float w, float h, GLubyte* tex, int tw, int th)
+Sprite SpriteManager::create_sprite(Sprite::Sprite_Data data)
 {
-	Sprite sprite = Sprite(id, x, y, w, h, tex, tw, th);
-	if (id >= 0) 
+	Sprite sprite = Sprite(data);
+	if (data.id >= 0) 
 	{
-		std::pair<int, Sprite> el(id, sprite);
+		std::pair<int, Sprite> el(data.id, sprite);
 		sprites.insert(el);
 	}
 
@@ -35,38 +35,36 @@ Sprite* SpriteManager::get_sprite(int id)
 	return &sprites.at(id);
 }
 
-void SpriteManager::update_sprite(int id, float x, float y, float w, float h, float tw, float th, GLubyte* tex)
+std::unordered_map<int, Sprite> SpriteManager::get_sprites()
 {
-	Sprite* sprite = get_sprite(id);
-
-	glm::mat4 t = glm::translate(glm::vec3(x - sprite->get_x(), y - sprite->get_y(), 0.0f));
-	glm::mat4 s = glm::scale(glm::vec3(w / sprite->get_w(), h / sprite->get_h(), 1.0f));
-	sprite->set_M_t(t);
-	sprite->set_M_s(s);
-	sprite->set_position(x, y);
-	sprite->set_dimensions(w, h);
-	sprite->set_current_matrix(t * s * sprite->get_current_matrix());
-	if (tex != nullptr) {
-		sprite->set_texture(tw, th, tex);
-	}
+	return this->sprites;
 }
 
-void SpriteManager::draw_sprites()
+void SpriteManager::update_sprite(Sprite::Sprite_Data data)
+{
+	Sprite* sprite = get_sprite(data.id);
+
+	glm::mat4 t = glm::translate(glm::vec3(data.x - sprite->get_x(), data.y - sprite->get_y(), 0.0f));
+	glm::mat4 s = glm::scale(glm::vec3(data.w / sprite->get_w(), data.h / sprite->get_h(), 1.0f));
+	sprite->set_M_t(t);
+	sprite->set_M_s(s);
+	sprite->set_position(data.x, data.y);
+	sprite->set_dimensions(data.w, data.h);
+	sprite->set_current_matrix(t * s * sprite->get_current_matrix());
+	sprite->set_texture(data.tx, data.ty, data.tw, data.th);
+}
+
+void SpriteManager::draw_sprites(GLuint program)
 {
 	unsigned int M_t_location, M_s_location, current_matrix_location;
-	glUseProgram(sprite_display_program);
+	
 	glActiveTexture(GL_TEXTURE0);
-	unsigned int textureLocation = glGetUniformLocation(this->sprite_display_program, "in_texture");
+	unsigned int textureLocation = glGetUniformLocation(program, "in_texture");
 	glUniform1i(textureLocation, 0);
 
-	M_t_location = glGetUniformLocation(this->sprite_display_program, "M_t");
-	M_s_location = glGetUniformLocation(this->sprite_display_program, "M_s");
-	current_matrix_location = glGetUniformLocation(this->sprite_display_program, "current_matrix");
-
-	// Draw background
-	glBindVertexArray(this->background.get_vao());
-	glBindTexture(GL_TEXTURE_2D, this->background.get_texture());
-	glDrawArrays(GL_QUADS, 0, 4);
+	M_t_location = glGetUniformLocation(program, "M_t");
+	M_s_location = glGetUniformLocation(program, "M_s");
+	current_matrix_location = glGetUniformLocation(program, "current_matrix");
 	
 	for (std::pair<int, Sprite> p : this->sprites) {
 		glBindVertexArray(p.second.get_vao());
@@ -78,8 +76,6 @@ void SpriteManager::draw_sprites()
 		glUniformMatrix4fv(M_s_location, 1, GL_FALSE, glm::value_ptr(ms));
 		glUniformMatrix4fv(current_matrix_location, 1, GL_FALSE, glm::value_ptr(m));
 
-
-		glBindTexture(GL_TEXTURE_2D, p.second.get_texture());
 		glDrawArrays(GL_QUADS, 0, 4);
 
 		
@@ -87,19 +83,9 @@ void SpriteManager::draw_sprites()
 	
 }
 
-Sprite SpriteManager::create_sprite_background(float w, float h, GLubyte* tex)
-{
-	this->background = create_sprite(-1, -1.0, -1.0, 2.0, 2.0, tex, w, h);
-	return this->background;
-}
-
 SpriteManager::SpriteManager()
 {
-	ShaderLoader shader_loader;
-	std::string vertexShader_filename = "SpriteShader.glsl";
-	std::string fragmentShader_filename = "FragmentShader.glsl";
-	this->sprite_display_program = shader_loader.CreateProgram(vertexShader_filename.c_str(),
-																fragmentShader_filename.c_str());
+	
 }
 
 SpriteManager::~SpriteManager()
