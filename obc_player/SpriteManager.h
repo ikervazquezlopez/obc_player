@@ -20,6 +20,7 @@ private:
 	SpriteManager();
 	~SpriteManager();
 	std::unordered_map<int, Sprite> sprites;
+	bool contains_sprite(int id);
 	static SpriteManager* s_instance;
 	Sprite background;
 };

@@ -6,6 +6,7 @@
 
 #include "CodecUtils.h"
 
+
 class Coder
 {
 

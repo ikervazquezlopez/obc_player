@@ -160,6 +160,24 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteManager.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture_atlas_0.jpg" />
+    <Image Include="texture_atlas_1.jpg" />
+    <Image Include="texture_atlas_10.jpg" />
+    <Image Include="texture_atlas_11.jpg" />
+    <Image Include="texture_atlas_12.jpg" />
+    <Image Include="texture_atlas_13.jpg" />
+    <Image Include="texture_atlas_14.jpg" />
+    <Image Include="texture_atlas_15.jpg" />
+    <Image Include="texture_atlas_2.jpg" />
+    <Image Include="texture_atlas_3.jpg" />
+    <Image Include="texture_atlas_4.jpg" />
+    <Image Include="texture_atlas_5.jpg" />
+    <Image Include="texture_atlas_6.jpg" />
+    <Image Include="texture_atlas_7.jpg" />
+    <Image Include="texture_atlas_8.jpg" />
+    <Image Include="texture_atlas_9.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\opencv3.redist.3.0.0.1\build\native\opencv3.redist.targets" Condition="Exists('..\packages\opencv3.redist.3.0.0.1\build\native\opencv3.redist.targets')" />

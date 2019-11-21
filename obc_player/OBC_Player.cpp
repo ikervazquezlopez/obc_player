@@ -1,32 +1,60 @@
 #include <iostream>
+#include <fstream>
 #include "SpriteManager.h"
 #include "Sprite.h"
 #include "Coder.h"
 #include "Decoder.h"
+#include "CodecUtils.h"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <thread>
+#include <chrono>
 
 #include "OBC_Player.h"
 
-
+int pass = 0;
 
 void _render_scene(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
-	if (background != nullptr) {
-		draw_background();
+	if (!decoder->is_finised()) {
+		if (background != nullptr) {
+			draw_background();
+		}
+	
+		std::pair<std::vector<Object_data>, unsigned char*> p = decoder->read_frame();
+		GLubyte* texture_atlas_data = p.second;
+		update_texture_atlas(texture_atlas_data, TEXTURE_ATLAS_WIDTH, TEXTURE_ATLAS_HEIGHT);
+		
+		std::vector<Object_data> objs = p.first;
+		std::cout << "=========" << std::endl;
+		for (Object_data o : objs) {
+			Sprite::Sprite_Data sdata = { o.id, (float) o.quad.x / decoder->get_width(), (float) o.quad.y / decoder->get_height(), 
+												(float) o.quad.w / decoder->get_width(), (float) o.quad.h / decoder->get_height(),
+												(float) o.texture.x / TEXTURE_ATLAS_WIDTH, (float) o.texture.y / TEXTURE_ATLAS_HEIGHT, 
+												(float) o.texture.w / TEXTURE_ATLAS_WIDTH, (float) o.texture.h / TEXTURE_ATLAS_HEIGHT };
+			SpriteManager::get_instance()->update_sprite(sdata);
+			Sprite::print_sprite_data(sdata);
+		}
+		
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture_atlas);
+		for (std::pair<int, Sprite> p : SpriteManager::get_instance()->get_sprites()) {
+			draw_sprite(p.second);
+		}
+
+	}
+	else {
+		std::cout << "I am finished" << std::endl;
 	}
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture_atlas);
-	for (std::pair<int, Sprite> p : SpriteManager::get_instance()->get_sprites()) {
-		draw_sprite(p.second);
-	}
-
+	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	glutSwapBuffers();
+	
 }
 
 void _idle(void)
@@ -144,12 +172,53 @@ void _init()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+
+
 void code_video() {
 	coder->open_file("test_video.16kc");
-	coder->write_header(3, 30, 400, 400);
+	coder->write_header(16, 30, 800, 800);
 	GLubyte* background_img = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\background.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
 	
 	coder->write_background(background_img, tw * th * 3);
+
+
+	Object_data data;
+	Quad_data qdata;
+	Texture_data tdata;
+	std::vector<Object_data> objs;
+	qdata = { 0,0, 200, 100 };
+	tdata = { 0, 0, 256, 256 };
+	data = { 0, qdata, tdata };
+	objs.push_back(data);
+
+	qdata = { 200, 100, 200,300 };
+	tdata = { 256, 0, 476, 593 };
+	data = { 1, qdata, tdata };
+	objs.push_back(data);
+
+	qdata = { 500, 150, 500,250 };
+	tdata = { 0, 595, 660, 373 };
+	data = { 2, qdata, tdata };
+	objs.push_back(data);
+
+	int taw = 1024;
+	int tah = 1024;
+	for (int i = 0; i < 16; i++) {
+		std::stringstream filename;
+		filename << "texture_atlas_" << i << ".png";
+	
+		
+		GLubyte* atlas = SOIL_load_image(filename.str().c_str(), &taw, &tah, 0, SOIL_LOAD_RGB);
+		if (atlas == nullptr)
+			continue;
+		coder->write_frame_metadata(objs);
+		objs.at(0).quad.x += 10;
+		objs.at(1).quad.w -= 10;
+		objs.at(2).quad.y += 10;
+		coder->write_frame_texture_atlas(atlas);
+	}
+
+
 	coder->close_file();
 }
 
@@ -158,23 +227,34 @@ void code_video() {
 int main(int argc, char** argv) {
 
 	coder = new Coder();
-	//code_video();
+	code_video();
 	decoder = new Decoder();
 	decoder->open_file("test_video.16kc");
 	decoder->read_header();
 	GLubyte* background_img = decoder->read_background();
 	
 	background = nullptr;
+	/*
+	std::pair<std::vector<Object_data>, unsigned char*> p;
+	for (int i = 0; i < 17; i++) {
+		if (decoder->is_finised()) {
+			std::cout << "File reading finshed." << std::endl;
+			break;
+		}
+		p = decoder->read_frame();
+	}
+*/
+	//GLubyte* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
+	//GLubyte* atlas = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Documents\\Python Scripts\\2DbinPacking\\test_texture.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
 
-	GLubyte* tex = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Pictures\\Saved Pictures\\NationalGeographic.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
-	GLubyte* atlas = SOIL_load_image("C:\\Users\\ikervazquezlopez\\Documents\\Python Scripts\\2DbinPacking\\test_texture.jpg", &tw, &th, 0, SOIL_LOAD_RGB);
 
-
-	initialize(660, 373, argc, argv);
-	update_texture_atlas(atlas, 256, 256);
-
+	initialize(decoder->get_width(), decoder->get_width(), argc, argv);
+	//update_texture_atlas(atlas, 256, 256);
+	
 	background = new Background(660, 373, background_img);
 	
+	
+	/*
 	SpriteManager* manager = SpriteManager::get_instance();
 
 	Sprite::Sprite_Data data;
@@ -183,6 +263,7 @@ int main(int argc, char** argv) {
 
 	data = { 1, -1, -1, 0.5, 0.5, 0.25, 0.25, 0.75, 0.75 };
 	s = manager->create_sprite(data);
+	*/
 
 	glutDisplayFunc(_render_scene);
 	glutIdleFunc(_idle);

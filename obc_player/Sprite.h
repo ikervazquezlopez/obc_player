@@ -56,6 +56,8 @@ public:
 	glm::mat4 get_M_t();
 	glm::mat4 get_M_s();
 
+	static void print_sprite_data(Sprite_Data data);
+
 private:
 	float x;
 	float y;

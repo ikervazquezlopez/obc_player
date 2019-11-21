@@ -1,8 +1,6 @@
 #include "Decoder.h"
 #include "CodecUtils.h"
 
-
-
 void Decoder::read_4_bytes(char buffer[5])
 {
 	this->file.read(buffer, 4); 
@@ -19,6 +17,7 @@ Decoder::Decoder()
 
 	this->video_width = 0;
 	this->video_height = 0;
+
 }
 
 Decoder::~Decoder()
@@ -33,6 +32,8 @@ void Decoder::open_file(const char* filename)
 		std::cerr << "(Decoder) The file could not be open!" << std::endl;
 		exit(-1);
 	}
+	this->finished = false;
+	this->readed_frames = 0;
 }
 
 void Decoder::close_file()
@@ -90,7 +91,7 @@ unsigned char* Decoder::read_background()
 	return (unsigned char *) background_data;
 }
 
-std::vector<Object_data*> Decoder::read_frame_meatadata()
+std::vector<Object_data> Decoder::read_frame_meatadata()
 {
 	if (!this->FLAG_BACKGROUND_READED) 
 	{
@@ -98,7 +99,7 @@ std::vector<Object_data*> Decoder::read_frame_meatadata()
 		exit(-1);
 	}
 
-	std::vector<Object_data*> objs;
+	std::vector<Object_data> objs;
 	char* buffer = new char[5];
 
 	read_4_bytes(buffer);
@@ -112,8 +113,48 @@ std::vector<Object_data*> Decoder::read_frame_meatadata()
 	return objs;
 }
 
-Object_data* Decoder::read_object()
+unsigned char* Decoder::read_frame_texture_atlas()
 {
+	char* atlas_data = new char[TEXTURE_ATLAS_RESOLUTION * 3];
+	this->file.read(atlas_data, TEXTURE_ATLAS_RESOLUTION * 3);
+	return reinterpret_cast<unsigned char*> (atlas_data);
+}
+
+std::pair<std::vector<Object_data>, unsigned char*> Decoder::read_frame()
+{
+	std::pair <std::vector<Object_data>, unsigned char*> p;
+	p.first = this->read_frame_meatadata();
+	p.second = this->read_frame_texture_atlas();
+	this->readed_frames++;
+	std::cout << this->readed_frames << std::endl;
+	if (this->readed_frames >= this->frame_count)
+		this->finished = true;
+	return p;
+}
+
+bool Decoder::is_finised()
+{
+	return this->finished;
+}
+
+uint32_t Decoder::get_width()
+{
+	return this->video_width;
+}
+
+uint32_t Decoder::get_height()
+{
+	return this->video_height;
+}
+
+uint32_t Decoder::get_frame_rate()
+{
+	return this->frame_rate;
+}
+
+Object_data Decoder::read_object()
+{
+	
 	char* buffer = new char[5];
 	Object_data obj;
 
@@ -139,6 +180,6 @@ Object_data* Decoder::read_object()
 	obj.texture.h = *reinterpret_cast<uint32_t*>(buffer);
 
 	delete[] buffer;
-	return &obj;
+	return obj;
 
 }

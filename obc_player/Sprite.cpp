@@ -5,6 +5,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <iostream>
 
 
 Sprite::Sprite()
@@ -212,5 +213,12 @@ glm::mat4 Sprite::get_M_t()
 glm::mat4 Sprite::get_M_s()
 {
 	return this->M_s;
+}
+
+void Sprite::print_sprite_data(Sprite_Data data)
+{
+	std::cout << data.id << " ==> [";
+	std::cout << data.x << ", " << data.y << ", " << data.w << ", " << data.h << ", ";
+	std::cout << data.tx << ", " << data.ty << ", " << data.tw << ", " << data.th << "]" << std::endl;
 }
 

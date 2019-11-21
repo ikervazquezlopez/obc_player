@@ -42,6 +42,9 @@ std::unordered_map<int, Sprite> SpriteManager::get_sprites()
 
 void SpriteManager::update_sprite(Sprite::Sprite_Data data)
 {
+	if (!contains_sprite(data.id)) {
+		Sprite s = create_sprite(data);
+	}
 	Sprite* sprite = get_sprite(data.id);
 
 	glm::mat4 t = glm::translate(glm::vec3(data.x - sprite->get_x(), data.y - sprite->get_y(), 0.0f));
@@ -91,4 +94,9 @@ SpriteManager::SpriteManager()
 SpriteManager::~SpriteManager()
 {
 
+}
+
+bool SpriteManager::contains_sprite(int id)
+{
+	return this->sprites.count(id) > 0;
 }

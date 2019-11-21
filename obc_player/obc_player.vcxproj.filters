@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Codec">
       <UniqueIdentifier>{29ade190-5e30-4780-87b7-4dd19b1ee9d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="data">
+      <UniqueIdentifier>{9ed8ff49-3ea7-4572-b9b9-b7205d3f1426}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ShaderLoader.cpp">
@@ -54,7 +57,9 @@
     <None Include="SpriteShader.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="test_video.16kc" />
+    <None Include="test_video.16kc">
+      <Filter>data</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderLoader.h">
@@ -81,5 +86,55 @@
     <ClInclude Include="OBC_Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture_atlas_0.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_1.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_2.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_3.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_4.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_5.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_6.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_7.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_8.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_9.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_10.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_11.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_12.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_13.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_14.jpg">
+      <Filter>data</Filter>
+    </Image>
+    <Image Include="texture_atlas_15.jpg">
+      <Filter>data</Filter>
+    </Image>
   </ItemGroup>
 </Project>

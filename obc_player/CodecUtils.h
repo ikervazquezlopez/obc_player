@@ -1,7 +1,9 @@
 #pragma once
 #include <stdint.h>
 
-#define TEXTURE_ATLAS_RESOLUTION 4096 * 2048
+#define TEXTURE_ATLAS_WIDTH 1024
+#define TEXTURE_ATLAS_HEIGHT 1024
+#define TEXTURE_ATLAS_RESOLUTION TEXTURE_ATLAS_WIDTH * TEXTURE_ATLAS_HEIGHT
 
 struct Quad_data {
 	uint32_t x;
